@@ -44,6 +44,69 @@ size_t CircularRead(Circular *circ, uint8_t *buff, size_t length) {
   return toCopy;
 }
 
+size_t CircularSkip(Circular *circ, size_t length) {
+  assert(length);
+
+  spinlockAcquire(&circ->LOCK_CIRC);
+
+  size_t write = circ->writePtr;
+  size_t read = circ->readPtr;
+
+  if (write == read) {
+    spinlockRelease(&circ->LOCK_CIRC);
+    return 0; // empty buffer
+  }
+
+  size_t readable = CIRC_READABLE(write, read, circ->buffSize);
+  size_t toSkip = MIN(readable, length);
+
+  read = (read + toSkip) % circ->buffSize;
+
+  assert(toSkip > 0);
+  circ->readPtr = read;
+
+  spinlockRelease(&circ->LOCK_CIRC);
+  return toSkip;
+}
+
+size_t CircularPeek(Circular *circ, uint8_t *buff, size_t length, size_t skip) {
+  assert(length); // no wasting resources here
+
+  spinlockAcquire(&circ->LOCK_CIRC);
+
+  size_t write = circ->writePtr;
+  size_t read = circ->readPtr;
+
+  if (write == read) {
+    spinlockRelease(&circ->LOCK_CIRC);
+    return 0; // empty
+  }
+
+  size_t readable = CIRC_READABLE(write, read, circ->buffSize);
+  if (skip >= readable) {
+    spinlockRelease(&circ->LOCK_CIRC);
+    return 0; // nothing to peek after skipping
+  }
+
+  // advance read by skipping (do NOT commit it)
+  read = (read + skip) % circ->buffSize;
+  readable -= skip;
+
+  size_t toCopy = MIN(readable, length);
+
+  size_t first = MIN(toCopy, circ->buffSize - read);
+  memcpy(buff, &circ->buff[read], first);
+
+  size_t second = toCopy - first;
+  if (second)
+    memcpy(buff + first, circ->buff, second);
+
+  assert(toCopy > 0);
+
+  spinlockRelease(&circ->LOCK_CIRC);
+  return toCopy;
+}
+
 size_t CircularReadPoll(Circular *circ) {
   size_t ret = 0;
   spinlockAcquire(&circ->LOCK_CIRC);

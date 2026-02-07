@@ -28,6 +28,8 @@ typedef struct CircularInt {
 
 void   CircularAllocate(Circular *circ, size_t size);
 size_t CircularRead(Circular *circ, uint8_t *buff, size_t length);
+size_t CircularPeek(Circular *circ, uint8_t *buff, size_t length, size_t skip);
+size_t CircularSkip(Circular *circ, size_t length);
 size_t CircularWrite(Circular *circ, const uint8_t *buff, size_t length);
 size_t CircularReadPoll(Circular *circ);
 size_t CircularWritePoll(Circular *circ);
