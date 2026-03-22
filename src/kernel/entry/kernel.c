@@ -92,10 +92,10 @@ void _start(void) {
   if (!systemDiskInit)
     printf("[warning] System disk has not been detected!\n");
 
-  printf("=========================================\n");
-  printf("==     Cave-Like Operating System      ==\n");
-  printf("==      Copyright MalwarePad 2025      ==\n");
-  printf("=========================================\n\n");
+  printf("=============================================\n");
+  printf("==     ViX Operating System                ==\n");
+  printf("==      Copyright winhuirass-hue 2026      ==\n");
+  printf("=============================================\n\n");
 
   while (1)
     run("/bin/bash", true, 0, 0);
