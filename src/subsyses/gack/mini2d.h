@@ -1,5 +1,5 @@
-#ifndef MINI2D_H
-#define MINI2D_H
+#ifndef GACK_H
+#define GACK_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,5 +54,4 @@ void m2d_fillrect(m2d_context_t* ctx, int x, int y, int w, int h);
 }
 #endif
 
-#endif /* MINI2D_H */
-``
+#endif /* GACK_H */
