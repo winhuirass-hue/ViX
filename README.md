@@ -1,6 +1,6 @@
 # ViX
 
-ViX is an x86-family POSIX-oriented hobby operating system written mostly in C.
+ViX is an x86-family POSIX-oriented hobby operating system written mostly in C and OS/2 like OS.
 
 ## Highlights
 
