@@ -62,14 +62,24 @@ typedef uintptr_t address_t;
 #define __SLONGWORD_TYPE long int
 #define __ULONGWORD_TYPE unsigned long int
 
+#if defined(__x86_64__)
 #define __SQUAD_TYPE long int
 #define __UQUAD_TYPE unsigned long int
 #define __SWORD_TYPE long int
 #define __UWORD_TYPE unsigned long int
-#define __SLONG32_TYPE int
-#define __ULONG32_TYPE unsigned int
 #define __S64_TYPE long int
 #define __U64_TYPE unsigned long int
+#else
+#define __SQUAD_TYPE long long int
+#define __UQUAD_TYPE unsigned long long int
+#define __SWORD_TYPE int
+#define __UWORD_TYPE unsigned int
+#define __S64_TYPE long long int
+#define __U64_TYPE unsigned long long int
+#endif
+
+#define __SLONG32_TYPE int
+#define __ULONG32_TYPE unsigned int
 /* No need to mark the typedef with __extension__.   */
 #define __STD_TYPE typedef
 
