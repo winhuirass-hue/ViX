@@ -198,3 +198,27 @@ char *strrchr(const char *str, int c) {
 
   return (char *)last; // Cast to non-const to match standard `strrchr()`
 }
+
+int strcmp(const char *str1, const char *str2) {
+  while (*str1 && (*str1 == *str2)) {
+    str1++;
+    str2++;
+  }
+  return (unsigned char)*str1 - (unsigned char)*str2;
+}
+
+char *strcpy(char *dest, const char *src) {
+  char *out = dest;
+  while ((*dest++ = *src++))
+    ;
+  return out;
+}
+
+char *strchr(const char *str, int c) {
+  while (*str) {
+    if (*str == (char)c)
+      return (char *)str;
+    str++;
+  }
+  return ((char)c == '\0') ? (char *)str : NULL;
+}
