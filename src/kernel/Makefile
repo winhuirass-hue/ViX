@@ -1,8 +1,20 @@
-COMPILER = ~/opt/cross/bin/x86_64-cavos-gcc
-LINKER = ~/opt/cross/bin/x86_64-cavos-ld
+ARCH ?= x86_64
+
+COMPILER = ~/opt/cross/bin/$(ARCH)-cavos-gcc
+LINKER = ~/opt/cross/bin/$(ARCH)-cavos-ld
 ASSEMBLER = nasm
+ifeq ($(ARCH),i686)
+MFLAG = -m32
+ASFLAGS = -f elf32
+LDFLAGS_ARCH = -m elf_i386 -T link32.ld
+else
+MFLAG = -m64
+ASFLAGS = -f elf64
+LDFLAGS_ARCH = -m elf_x86_64 -T link.ld
+endif
+
 # -w(no warnings) -g(dev)
-CFLAGS = -m64 -g -c -ffreestanding -Wall -Werror -fcommon -Iinclude/ -Inetworking/lwip/include/ -fPIE -mno-80387 \
+CFLAGS = $(MFLAG) -g -c -ffreestanding -Wall -Werror -fcommon -Iinclude/ -Inetworking/lwip/include/ -fPIE -mno-80387 \
     -mno-mmx \
     -mno-sse \
 		-nostartfiles \
@@ -11,14 +23,13 @@ CFLAGS = -m64 -g -c -ffreestanding -Wall -Werror -fcommon -Iinclude/ -Inetworkin
     -mno-red-zone -fno-stack-protector \
     -fno-stack-check \
     -fno-lto
-ASFLAGS = -f elf64
-LDFLAGS = -m elf_x86_64 \
+LDFLAGS = $(LDFLAGS_ARCH) \
 		-nostdlib \
     -static \
     -pie \
     --no-dynamic-linker \
     -z text \
-    -z max-page-size=0x1000 -T link.ld
+    -z max-page-size=0x1000
 
 TARGET = ../../target
 MOUNTPOINT = /cavosmnt
