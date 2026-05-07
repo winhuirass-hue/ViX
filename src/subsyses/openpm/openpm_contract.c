@@ -31,6 +31,11 @@ openpm_status_t openpm_get_contract_descriptor(openpm_contract_descriptor_t *out
   out_desc->abi_major = OPENPM_ABI_MAJOR;
   out_desc->abi_minor = OPENPM_ABI_MINOR;
   out_desc->capability_count = (uint32_t)(sizeof(g_openpm_caps) / sizeof(g_openpm_caps[0]));
+
+/*
+ * capabilities points to immutable, static storage
+ * valid for the lifetime of the process
+*/
   out_desc->capabilities = g_openpm_caps;
   return OPENPM_STATUS_OK;
 }
