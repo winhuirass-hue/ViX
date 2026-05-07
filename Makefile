@@ -42,19 +42,21 @@ disk_prepare: verifytools limine uacpi musl ports
 	@$(MAKE) -C src/software/badtest -j1
 	@$(MAKE) -C src/software/drawimg -j1
 disk: disk_prepare clean
-	@$(MAKE) -C src/kernel disk
+	@$(MAKE) -C src/kernel disk ARCH=$(ARCH)
 disk_dirty: disk_prepare
-	@$(MAKE) -C src/kernel disk_dirty
+	@$(MAKE) -C src/kernel disk_dirty ARCH=$(ARCH)
 
 # Verify our toolchain is.. there!
-TOOLCHAIN_GCC_VERSION := $(shell ~/opt/cross/bin/x86_64-cavos-gcc --version 2>/dev/null)
+ARCH ?= x86_64
+TOOLCHAIN_GCC := ~/opt/cross/bin/$(ARCH)-cavos-gcc
+TOOLCHAIN_GCC_VERSION := $(shell $(TOOLCHAIN_GCC) --version 2>/dev/null)
 GCC_CHECK_DATE = 1727727259
-GCC_ACTUAL_DATE := $(shell stat -c %Y ~/opt/cross/bin/x86_64-cavos-gcc)
+GCC_ACTUAL_DATE := $(shell stat -c %Y $(TOOLCHAIN_GCC))
 verifytools:
 ifdef TOOLCHAIN_GCC_VERSION
 	@echo "$(TOOLCHAIN_GCC_VERSION)"
 else
-	@echo -e '\033[0;31mx86_64-cavos-gcc was not found! Please use "make tools" to compile the toolchain!\033[0m'
+		@echo -e '\033[0;31m$(ARCH)-cavos-gcc was not found! Please use "make tools" to compile the toolchain!\033[0m'
 	@exit 1
 endif
 	@if [ $(GCC_ACTUAL_DATE) -lt $(GCC_CHECK_DATE) ]; then \
@@ -64,7 +66,7 @@ endif
 
 # Raw kernel.bin
 kernel:
-	@$(MAKE) -C src/kernel all
+	@$(MAKE) -C src/kernel all ARCH=$(ARCH)
 
 # Tools
 tools:
